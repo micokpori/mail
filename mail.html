@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Email Generator</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for a clean look */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+        }
+        /* Hide the copy message initially */
+        #copyMessage {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        /* Style for the container to center everything */
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body class="selection:bg-blue-200 selection:text-blue-800">
+    <div class="container bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-blue-500">
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-6 tracking-tight">
+            Generate Your Email
+        </h1>
+
+        <!-- First Component: Generate Button -->
+        <button id="generateButton"
+                class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700
+                       text-white font-bold py-3 px-6 rounded-full shadow-lg transform
+                       hover:scale-105 transition-all duration-300 ease-in-out
+                       focus:outline-none focus:ring-4 focus:ring-blue-300 mb-8 w-full md:w-auto">
+            ✨ Generate New Email ✨
+        </button>
+
+        <!-- Second Component: Generated Email Display -->
+        <div class="bg-gray-100 p-4 rounded-xl mb-6 border border-gray-200 break-words">
+            <p id="generatedEmail" class="text-xl font-semibold text-gray-700 select-all"></p>
+        </div>
+
+        <!-- Third Component: Copy Button -->
+        <button id="copyButton"
+                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-5 rounded-full
+                       shadow-md transition-colors duration-200 ease-in-out
+                       focus:outline-none focus:ring-4 focus:ring-green-300 w-full md:w-auto">
+            📋 Copy to Clipboard
+        </button>
+
+        <!-- Copy Confirmation Message -->
+        <p id="copyMessage" class="text-sm text-green-700 mt-4 font-medium">Copied to clipboard!</p>
+    </div>
+
+    <script>
+        // Function to generate a random alphanumeric string of a given length
+        function generateRandomString(length = 6) {
+            const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        // Function to generate and display the email address
+        function generateAndDisplayEmail() {
+            const randomWord = generateRandomString(6);
+            const email = `betterspot${randomWord}@outlook.com`;
+            document.getElementById('generatedEmail').textContent = email;
+            hideCopyMessage(); // Hide message when new email is generated
+        }
+
+        // Function to copy the generated email to the clipboard
+        function copyEmailToClipboard() {
+            const emailText = document.getElementById('generatedEmail').textContent;
+            // Use a temporary textarea to copy text to clipboard as navigator.clipboard.writeText might not work in some environments (like iframes)
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = emailText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            showCopyMessage(); // Show confirmation message
+        }
+
+        // Functions to show/hide the copy confirmation message
+        let copyMessageTimeout; // To store the timeout ID
+        function showCopyMessage() {
+            const messageElement = document.getElementById('copyMessage');
+            messageElement.style.opacity = '1'; // Make it visible
+            clearTimeout(copyMessageTimeout); // Clear any previous timeout
+            copyMessageTimeout = setTimeout(() => {
+                hideCopyMessage();
+            }, 2000); // Hide after 2 seconds
+        }
+
+        function hideCopyMessage() {
+            document.getElementById('copyMessage').style.opacity = '0'; // Make it invisible
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Generate an email immediately when the page loads
+            generateAndDisplayEmail();
+
+            // Attach event listener to the generate button
+            document.getElementById('generateButton').addEventListener('click', generateAndDisplayEmail);
+
+            // Attach event listener to the copy button
+            document.getElementById('copyButton').addEventListener('click', copyEmailToClipboard);
+        });
+    </script>
+</body>
+</html>
