@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Email Generator</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
     body {
         background: radial-gradient(circle at 50% 50%, #1e293b, #0f172a);
@@ -14,27 +13,156 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px;
+        padding-top: 40px;
     }
     .glass-morphism {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
         border-radius: 1rem;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     }
     .floating-orb {
-        position: fixed;
+        position: absolute;
         border-radius: 50%;
-        filter: blur(80px);
-        animation: float 15s infinite ease-in-out;
+        filter: blur(60px);
+        animation: float 10s infinite ease-in-out;
         z-index: -1;
     }
     @keyframes float {
         0%, 100% { transform: translateY(0px) translateX(0px); }
-        33% { transform: translateY(-30px) translateX(20px); }
-        66% { transform: translateY(10px) translateX(-20px); }
+        50% { transform: translateY(-20px) translateX(20px); }
     }
+</style>
+</head>
+<body>
+
+<!-- Floating Orbs -->
+<div class="floating-orb w-64 h-64 bg-purple-500 opacity-30" style="top: -50px; left: -50px;"></div>
+<div class="floating-orb w-64 h-64 bg-blue-500 opacity-30" style="bottom: -50px; right: -50px;"></div>
+
+<!-- Top Copy Button -->
+<div class="w-full flex justify-center mb-6">
+    <button 
+        id="topCopyButton"
+        class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-200"
+    >
+        Copy Email
+    </button>
+</div>
+
+<!-- Main Card -->
+<div class="glass-morphism max-w-lg w-full p-6 relative z-10 text-white">
+    <h1 class="text-2xl font-bold mb-4">Random Email Generator</h1>
+
+    <!-- Prefix input -->
+    <label for="prefixInput" class="block mb-2">Prefix:</label>
+    <input id="prefixInput" type="text" value="betterspot" 
+        class="w-full p-2 mb-4 rounded bg-white/10 border border-white/20 focus:outline-none focus:border-white/50">
+
+    <!-- Domain select -->
+    <label for="domainSelect" class="block mb-2">Domain:</label>
+    <select id="domainSelect" 
+        class="w-full p-2 mb-4 rounded bg-white/10 border border-white/20 focus:outline-none focus:border-white/50">
+        <option value="outlook.com">outlook.com</option>
+        <option value="gmail.com">gmail.com</option>
+        <option value="yahoo.com">yahoo.com</option>
+    </select>
+
+    <!-- Random length -->
+    <label for="lengthSlider" class="block mb-2">Random String Length: 
+        <span id="lengthValue" class="font-bold">6</span>
+    </label>
+    <input id="lengthSlider" type="range" min="3" max="12" value="6" 
+        class="w-full mb-4">
+
+    <!-- Generate Button -->
+<button id="generateButton" 
+    class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition duration-200 w-full mb-4">
+    Generate Email
+</button>
+
+
+    <!-- Generated Email Display -->
+    <div class="flex items-center justify-between bg-black/20 p-3 rounded-lg">
+        <span id="generatedEmail" class="truncate"></span>
+        <button id="copyButton" 
+            class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg">
+            Copy
+        </button>
+    </div>
+
+    <!-- Counter -->
+    <div class="mt-4 text-sm text-gray-300" id="emailCounter">0 generated</div>
+
+    <!-- Copy confirmation -->
+    <div id="copyConfirmation" 
+        class="mt-2 text-green-400 text-sm opacity-0 transition-opacity duration-500">
+        Copied to clipboard!
+    </div>
+</div>
+
+<script>
+class EmailGenerator {
+    constructor() {
+        this.emailCount = 0;
+        this.init();
+    }
+
+    init() {
+        this.bindEvents();
+        this.generateAndDisplayEmail();
+    }
+
+    bindEvents() {
+        document.getElementById('generateButton').addEventListener('click', () => this.generateAndDisplayEmail());
+        document.getElementById('lengthSlider').addEventListener('input', (e) => this.updateLengthDisplay(e.target.value));
+        document.getElementById('copyButton').addEventListener('click', () => this.copyEmailToClipboard());
+        document.getElementById('topCopyButton').addEventListener('click', () => this.copyEmailToClipboard());
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'g') this.generateAndDisplayEmail();
+            if (e.key.toLowerCase() === 'c') this.copyEmailToClipboard();
+        });
+    }
+
+    updateLengthDisplay(value) {
+        document.getElementById('lengthValue').textContent = value;
+    }
+
+    generateAndDisplayEmail() {
+        const prefix = document.getElementById('prefixInput').value; // always use current field value
+        const domain = document.getElementById('domainSelect').value;
+        const length = parseInt(document.getElementById('lengthSlider').value, 10);
+        const randomString = this.generateRandomString(length);
+        const email = `${prefix}${randomString}@${domain}`;
+        document.getElementById('generatedEmail').textContent = email;
+        this.emailCount++;
+        document.getElementById('emailCounter').textContent = `${this.emailCount} generated`;
+    }
+
+    generateRandomString(length) {
+        const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return result;
+    }
+
+    copyEmailToClipboard() {
+        const emailText = document.getElementById('generatedEmail').textContent;
+        navigator.clipboard.writeText(emailText).then(() => {
+            const confirmation = document.getElementById('copyConfirmation');
+            confirmation.style.opacity = '1';
+            setTimeout(() => confirmation.style.opacity = '0', 1000);
+        });
+    }
+}
+
+new EmailGenerator();
+</script>
+
+</body>
+</html>    }
     .input-focus {
         transition: all 0.2s ease;
     }
