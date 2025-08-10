@@ -116,6 +116,354 @@
     
     <div class="w-full max-w-lg">
         <div class="glass-morphism rounded-3xl p-8 hover-lift">
+            <!-- Copy Button - First Element -->
+            <div class="text-center mb-8">
+                <button 
+                    id="copyButton"
+                    class="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-300/50 mb-6"
+                    title="Copy generated email to clipboard"
+                >
+                    <svg id="copyIcon" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                    <svg id="checkIcon" class="w-5 h-5 mr-2 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span id="copyButtonText">Copy Email</span>
+                </button>
+            </div>
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-white mb-2">Email Generator</h1>
+                <p class="text-white/80 text-sm">Create unique email addresses instantly</p>
+            </div>
+
+            <!-- Configuration Section -->
+            <div class="space-y-6 mb-8">
+                <!-- Prefix Input -->
+                <div class="input-group">
+                    <label class="block text-white/90 text-sm font-medium mb-2">Email Prefix</label>
+                    <input 
+                        type="text" 
+                        id="prefixInput" 
+                        placeholder="betterspot" 
+                        value="betterspot"
+                        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                    >
+                </div>
+
+                <!-- Domain Selection -->
+                <div class="input-group">
+                    <label class="block text-white/90 text-sm font-medium mb-2">Email Domain</label>
+                    <div class="relative">
+                        <select 
+                            id="domainSelect" 
+                            class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
+                        >
+                            <option value="outlook.com" class="bg-gray-800">outlook.com</option>
+                            <option value="gmail.com" class="bg-gray-800">gmail.com</option>
+                            <option value="yahoo.com" class="bg-gray-800">yahoo.com</option>
+                            <option value="hotmail.com" class="bg-gray-800">hotmail.com</option>
+                            <option value="protonmail.com" class="bg-gray-800">protonmail.com</option>
+                            <option value="icloud.com" class="bg-gray-800">icloud.com</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Random String Length -->
+                <div class="input-group">
+                    <label class="block text-white/90 text-sm font-medium mb-2">Random String Length: <span id="lengthValue" class="font-bold">6</span></label>
+                    <input 
+                        type="range" 
+                        id="lengthSlider" 
+                        min="4" 
+                        max="12" 
+                        value="6"
+                        class="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer slider"
+                    >
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button 
+                id="generateButton"
+                class="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300/50 mb-6"
+            >
+                <span class="inline-flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Generate New Email
+                </span>
+            </button>
+
+            <!-- Generated Email Display -->
+            <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-white/80 text-sm font-medium">Generated Email:</span>
+                    <span id="emailCounter" class="text-white/60 text-xs px-2 py-1 bg-white/10 rounded-full">0 generated</span>
+                </div>
+                <div class="text-center">
+                    <p id="generatedEmail" class="text-xl font-mono font-semibold text-white select-all break-all"></p>
+                </div>
+            </div>
+
+            <!-- Copy Message -->
+            <div id="copyMessage" class="text-center text-green-300 font-medium opacity-0 transition-opacity duration-300">
+                <div class="inline-flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Copied to clipboard!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class EmailGenerator {
+            constructor() {
+                this.emailCount = 0;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.updateLengthDisplay();
+                this.generateAndDisplayEmail();
+            }
+
+            bindEvents() {
+                document.getElementById('generateButton').addEventListener('click', () => this.generateAndDisplayEmail());
+                document.getElementById('copyButton').addEventListener('click', () => this.copyEmailToClipboard());
+                document.getElementById('lengthSlider').addEventListener('input', () => this.updateLengthDisplay());
+            }
+
+            generateRandomString(length = 6) {
+                const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+                return Array.from({length}, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
+            }
+
+            generateAndDisplayEmail() {
+                const prefix = document.getElementById('prefixInput').value.trim() || 'betterspot';
+                const domain = document.getElementById('domainSelect').value;
+                const length = parseInt(document.getElementById('lengthSlider').value);
+                
+                const randomString = this.generateRandomString(length);
+                const email = `${prefix}${randomString}@${domain}`;
+                
+                const emailElement = document.getElementById('generatedEmail');
+                emailElement.textContent = email;
+                emailElement.classList.add('slide-in');
+                
+                this.emailCount++;
+                document.getElementById('emailCounter').textContent = `${this.emailCount} generated`;
+                
+                this.hideCopyMessage();
+                
+                // Remove animation class after animation completes
+                setTimeout(() => emailElement.classList.remove('slide-in'), 500);
+            }
+
+            async copyEmailToClipboard() {
+                const emailText = document.getElementById('generatedEmail').textContent;
+                
+                try {
+                    // Try modern clipboard API first
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(emailText);
+                    } else {
+                        // Fallback for older browsers or non-secure contexts
+                        const textArea = document.createElement('textarea');
+                        textArea.value = emailText;
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '-999999px';
+                        textArea.style.top = '-999999px';
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        document.execCommand('copy');
+                        textArea.remove();
+                    }
+                    
+                    this.showCopySuccess();
+                } catch (err) {
+                    console.error('Failed to copy email:', err);
+                    this.showCopyError();
+                }
+            }
+
+            showCopySuccess() {
+                const copyButton = document.getElementById('copyButton');
+                const copyIcon = document.getElementById('copyIcon');
+                const checkIcon = document.getElementById('checkIcon');
+                const buttonText = document.getElementById('copyButtonText');
+                
+                // Switch to check icon and update text
+                copyIcon.classList.add('hidden');
+                checkIcon.classList.remove('hidden');
+                buttonText.textContent = 'Copied!';
+                copyButton.classList.add('copy-success', 'bg-green-600');
+                
+                this.showCopyMessage();
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    copyIcon.classList.remove('hidden');
+                    checkIcon.classList.add('hidden');
+                    buttonText.textContent = 'Copy Email';
+                    copyButton.classList.remove('copy-success', 'bg-green-600');
+                }, 2000);
+            }
+
+            showCopyError() {
+                const message = document.getElementById('copyMessage');
+                message.innerHTML = `
+                    <div class="inline-flex items-center text-red-300">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Failed to copy. Please select and copy manually.
+                    </div>
+                `;
+                message.style.opacity = '1';
+                setTimeout(() => this.hideCopyMessage(), 3000);
+            }
+
+            showCopyMessage() {
+                const message = document.getElementById('copyMessage');
+                message.innerHTML = `
+                    <div class="inline-flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Copied to clipboard!
+                    </div>
+                `;
+                message.style.opacity = '1';
+                setTimeout(() => this.hideCopyMessage(), 2000);
+            }
+
+            hideCopyMessage() {
+                document.getElementById('copyMessage').style.opacity = '0';
+            }
+
+            updateLengthDisplay() {
+                const length = document.getElementById('lengthSlider').value;
+                document.getElementById('lengthValue').textContent = length;
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new EmailGenerator();
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                document.getElementById('generateButton').click();
+            }
+            if (e.key === 'c' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('copyButton').click();
+            }
+        });
+    </script>
+</body>
+</html>
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .copy-success {
+            animation: copySuccess 0.3s ease-out;
+        }
+
+        @keyframes copySuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .floating-orb:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 20%;
+            animation-delay: -2s;
+        }
+
+        .floating-orb:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 70%;
+            right: 20%;
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(3deg); }
+            66% { transform: translateY(5px) rotate(-3deg); }
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .domain-dropdown {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="selection:bg-white selection:text-purple-900">
+    <!-- Floating background orbs -->
+    <div class="floating-orb"></div>
+    <div class="floating-orb"></div>
+    
+    <div class="w-full max-w-lg">
+        <div class="glass-morphism rounded-3xl p-8 hover-lift">
             <!-- Header -->
             <div class="text-center mb-6">
                 <h1 class="text-xl font-bold text-white">Email Generator</h1>
