@@ -146,6 +146,7 @@ class EmailGenerator {
         document.getElementById('generatedEmail').textContent = email;
         this.emailCount++;
         document.getElementById('emailCounter').textContent = `${this.emailCount} generated`;
+        this.copyEmailToClipboard(); // Automatically copy after generation
     }
 
     generateRandomString(length) {
