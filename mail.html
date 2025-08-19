@@ -146,7 +146,11 @@ class EmailGenerator {
         document.getElementById('generatedEmail').textContent = email;
         this.emailCount++;
         document.getElementById('emailCounter').textContent = `${this.emailCount} generated`;
-        this.copyEmailToClipboard(); // Automatically copy after generation
+        this.copyEmailToClipboard().then(() => {
+            setTimeout(() => {
+                this.copyPasswordToClipboard();
+            }, 1500);
+        });
     }
 
     generateRandomString(length) {
@@ -160,7 +164,7 @@ class EmailGenerator {
 
     copyEmailToClipboard() {
         const emailText = document.getElementById('generatedEmail').textContent;
-        navigator.clipboard.writeText(emailText).then(() => {
+        return navigator.clipboard.writeText(emailText).then(() => {
             const confirmation = document.getElementById('copyConfirmation');
             confirmation.textContent = 'Copied to clipboard!';
             confirmation.style.opacity = '1';
