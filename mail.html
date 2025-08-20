@@ -118,7 +118,7 @@ class EmailGenerator {
 
     init() {
         this.bindEvents();
-        this.generateAndDisplayEmail();
+        this.generateWithoutCopy(); // Initial generation without copying
     }
 
     bindEvents() {
@@ -137,8 +137,8 @@ class EmailGenerator {
         document.getElementById('lengthValue').textContent = value;
     }
 
-    generateAndDisplayEmail() {
-        const prefix = document.getElementById('prefixInput').value; // always use current field value
+    generateWithoutCopy() {
+        const prefix = document.getElementById('prefixInput').value;
         const domain = document.getElementById('domainSelect').value;
         const length = parseInt(document.getElementById('lengthSlider').value, 10);
         const randomString = this.generateRandomString(length);
@@ -146,6 +146,10 @@ class EmailGenerator {
         document.getElementById('generatedEmail').textContent = email;
         this.emailCount++;
         document.getElementById('emailCounter').textContent = `${this.emailCount} generated`;
+    }
+
+    generateAndDisplayEmail() {
+        this.generateWithoutCopy();
         this.copyEmailToClipboard().then(() => {
             setTimeout(() => {
                 this.copyPasswordToClipboard();
