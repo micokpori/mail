@@ -111,8 +111,11 @@
     <!-- History -->
     <div id="historySection" class="mt-4">
         <h2 class="text-lg font-semibold mb-2">History</h2>
-        <ul id="historyList" class="list-disc pl-5 text-sm text-gray-200 max-h-40 overflow-y-auto"></ul>
-        <button id="clearHistory" class="mt-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-lg shadow-md transition duration-200">Clear History</button>
+        <ul id="historyList" class="list-disc pl-5 text-sm text-gray-200 max-h-60 overflow-y-auto"></ul>
+        <div class="flex gap-2 mt-2">
+            <button id="downloadHistory" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded-lg shadow-md transition duration-200">Download History</button>
+            <button id="clearHistory" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-lg shadow-md transition duration-200">Clear History</button>
+        </div>
     </div>
 </div>
 
@@ -136,6 +139,7 @@ class EmailGenerator {
         document.getElementById('topCopyButton').addEventListener('click', () => this.copyEmailToClipboard());
         document.getElementById('copyPasswordButton').addEventListener('click', () => this.copyPasswordToClipboard());
         document.getElementById('clearHistory').addEventListener('click', () => this.clearHistory());
+        document.getElementById('downloadHistory').addEventListener('click', () => this.downloadHistory());
         document.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === 'g') this.generateAndDisplayEmail();
             if (e.key.toLowerCase() === 'c') this.copyEmailToClipboard();
@@ -210,6 +214,19 @@ class EmailGenerator {
             document.getElementById('generatedEmail').textContent = '';
             this.updateHistoryList();
         }
+    }
+
+    downloadHistory() {
+        const historyText = this.history.join('\n');
+        const blob = new Blob([historyText], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'email_history.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 
     copyEmailToClipboard() {
