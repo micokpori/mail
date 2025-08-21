@@ -107,18 +107,26 @@
         class="mt-2 text-green-400 text-sm opacity-0 transition-opacity duration-500">
         Copied to clipboard!
     </div>
+
+    <!-- History -->
+    <div id="historySection" class="mt-4">
+        <h2 class="text-lg font-semibold mb-2">History</h2>
+        <ul id="historyList" class="list-disc pl-5 text-sm text-gray-200 max-h-40 overflow-y-auto"></ul>
+        <button id="clearHistory" class="mt-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-lg shadow-md transition duration-200">Clear History</button>
+    </div>
 </div>
 
 <script>
 class EmailGenerator {
     constructor() {
+        this.history = [];
         this.emailCount = 0;
         this.init();
     }
 
     init() {
         this.bindEvents();
-        this.generateWithoutCopy(); // Initial generation without copying
+        this.loadHistory();
     }
 
     bindEvents() {
@@ -127,6 +135,7 @@ class EmailGenerator {
         document.getElementById('copyButton').addEventListener('click', () => this.copyEmailToClipboard());
         document.getElementById('topCopyButton').addEventListener('click', () => this.copyEmailToClipboard());
         document.getElementById('copyPasswordButton').addEventListener('click', () => this.copyPasswordToClipboard());
+        document.getElementById('clearHistory').addEventListener('click', () => this.clearHistory());
         document.addEventListener('keydown', (e) => {
             if (e.key.toLowerCase() === 'g') this.generateAndDisplayEmail();
             if (e.key.toLowerCase() === 'c') this.copyEmailToClipboard();
@@ -137,19 +146,27 @@ class EmailGenerator {
         document.getElementById('lengthValue').textContent = value;
     }
 
-    generateWithoutCopy() {
+    loadHistory() {
+        const storedHistory = localStorage.getItem('emailHistory');
+        if (storedHistory) {
+            this.history = JSON.parse(storedHistory);
+            this.emailCount = this.history.length;
+            document.getElementById('emailCounter').textContent = `${this.emailCount} generated`;
+            this.updateHistoryList();
+            if (this.history.length > 0) {
+                document.getElementById('generatedEmail').textContent = this.history[this.history.length - 1];
+            }
+        }
+    }
+
+    generateAndDisplayEmail() {
         const prefix = document.getElementById('prefixInput').value;
         const domain = document.getElementById('domainSelect').value;
         const length = parseInt(document.getElementById('lengthSlider').value, 10);
         const randomString = this.generateRandomString(length);
         const email = `${prefix}${randomString}@${domain}`;
         document.getElementById('generatedEmail').textContent = email;
-        this.emailCount++;
-        document.getElementById('emailCounter').textContent = `${this.emailCount} generated`;
-    }
-
-    generateAndDisplayEmail() {
-        this.generateWithoutCopy();
+        this.addToHistory(email);
         this.copyEmailToClipboard().then(() => {
             setTimeout(() => {
                 this.copyPasswordToClipboard();
@@ -164,6 +181,35 @@ class EmailGenerator {
             result += characters.charAt(Math.floor(Math.random() * characters.length));
         }
         return result;
+    }
+
+    addToHistory(email) {
+        this.history.push(email);
+        localStorage.setItem('emailHistory', JSON.stringify(this.history));
+        this.emailCount = this.history.length;
+        document.getElementById('emailCounter').textContent = `${this.emailCount} generated`;
+        this.updateHistoryList();
+    }
+
+    updateHistoryList() {
+        const list = document.getElementById('historyList');
+        list.innerHTML = '';
+        this.history.slice().reverse().forEach(email => {
+            const li = document.createElement('li');
+            li.textContent = email;
+            list.appendChild(li);
+        });
+    }
+
+    clearHistory() {
+        if (confirm('Are you sure you want to clear the history?')) {
+            this.history = [];
+            localStorage.removeItem('emailHistory');
+            this.emailCount = 0;
+            document.getElementById('emailCounter').textContent = '0 generated';
+            document.getElementById('generatedEmail').textContent = '';
+            this.updateHistoryList();
+        }
     }
 
     copyEmailToClipboard() {
